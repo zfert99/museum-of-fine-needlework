@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Museum of Fine Needlework</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;0,6..96,700;1,6..96,500&family=Work+Sans:wght@400;500;600&display=swap">
+<style>
+html,body{margin:0;height:100%}
+[hidden]{display:none!important}
+/* Layout: one framed work hung on a gallery wall, its placard beside it, the rest of the room as a row of small frames below. */
+:root{
+  --wall:#cfd6c8; --wall-2:#c2cabb; --ink:#23291f; --muted:#5b6553;
+  --plate:#f3f1e8; --plate-ink:#262a22; --rule:#9aa48f;
+  --wood:#6b4526; --wood-hi:#9a6a3c; --wood-lo:#3f2714;
+  --cloth:#ece5d2; --hole:#cfc5aa; --guide:#b9ad8e; --work:#39466b;
+  --brass:#a8873c; --focus:#1d4f91;
+  --display:"Bodoni Moda","Didot","Bodoni MT",Georgia,serif;
+  --body:"Work Sans","Helvetica Neue",Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --wall:#1f2a24; --wall-2:#18211c; --ink:#e4e6d8; --muted:#a3ad98;
+  --plate:#e6e2d2; --plate-ink:#262a22; --rule:#4c5a4e;
+  --wood:#5e3c21; --wood-hi:#8a5d33; --wood-lo:#2c1b0e;
+  --cloth:#e3dcc8; --hole:#c5bb9f; --guide:#b0a484; --work:#39466b;
+  --brass:#b8974a; --focus:#9cc0f5; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --wall:#1f2a24; --wall-2:#18211c; --ink:#e4e6d8; --muted:#a3ad98;
+  --plate:#e6e2d2; --plate-ink:#262a22; --rule:#4c5a4e;
+  --wood:#5e3c21; --wood-hi:#8a5d33; --wood-lo:#2c1b0e;
+  --cloth:#e3dcc8; --hole:#c5bb9f; --guide:#b0a484; --work:#39466b;
+  --brass:#b8974a; --focus:#9cc0f5; color-scheme:dark }
+
+/* The sub-basement keeps one look in every theme, on purpose. */
+:root[data-depth="5"],:root[data-depth="5"][data-theme]{
+  --wall:#171010; --wall-2:#0e0909; --ink:#dccfbf; --muted:#9a877a; --rule:#3d2c27;
+  --wood:#2a1712; --wood-hi:#4a2a1e; --wood-lo:#120806; --brass:#8e2b22; --focus:#e0a080; color-scheme:dark }
+*{box-sizing:border-box}
+body{--dim:0;background:linear-gradient(rgba(12,9,6,var(--dim)),rgba(12,9,6,var(--dim))),linear-gradient(var(--wall),var(--wall-2));transition:background .8s;background-color:var(--wall);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;padding-inline:16px;padding-block:28px 40px;min-height:100%}
+.room{max-width:920px;margin-inline:auto;display:flex;flex-direction:column;gap:28px}
+header{display:flex;gap:14px;align-items:center;border-bottom:1px solid var(--rule);padding-bottom:18px}
+#seal{flex:none;width:46px;height:46px;border-radius:50%;border:1.5px solid var(--ink);background:none;color:var(--ink);font-family:var(--display);font-style:italic;font-size:19px;cursor:default;padding:0}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(24px,5vw,38px);line-height:1.05;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.sub{margin:4px 0 0;color:var(--muted);font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+
+.hang{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,300px);gap:28px;align-items:start}
+@media (max-width:760px){.hang{grid-template-columns:minmax(0,1fr)}}
+
+.frame{max-width:520px;width:100%;margin-inline:auto;padding:clamp(10px,3vw,18px);border-radius:3px;
+  background:linear-gradient(135deg,var(--wood-hi),var(--wood) 40%,var(--wood-lo));
+  box-shadow:0 14px 26px -12px rgba(0,0,0,.55),inset 0 0 0 2px var(--wood-lo)}
+.cloth{background-color:var(--cloth);padding:clamp(6px,2vw,14px);box-shadow:inset 0 0 0 1px var(--wood-lo),inset 0 3px 10px rgba(0,0,0,.25)}
+#board{display:grid;grid-template-columns:auto repeat(10,minmax(0,1fr));touch-action:none;user-select:none;-webkit-user-select:none}
+.clue{font-size:clamp(9px,2.4vw,13px);font-weight:600;color:#4a4332;font-variant-numeric:tabular-nums;display:flex;gap:.35em;line-height:1.15}
+.clue.r{justify-content:flex-end;align-items:center;padding-right:6px;white-space:nowrap}
+.clue.c{flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:5px}
+.clue.ok{color:#a39a80}
+.cell{position:relative;aspect-ratio:1;border:0;padding:0;margin:0;background:
+  radial-gradient(circle at 0 0,var(--hole) 0 1.6px,transparent 2px),
+  radial-gradient(circle at 100% 0,var(--hole) 0 1.6px,transparent 2px),
+  radial-gradient(circle at 0 100%,var(--hole) 0 1.6px,transparent 2px),
+  radial-gradient(circle at 100% 100%,var(--hole) 0 1.6px,transparent 2px);
+  cursor:pointer;border-right:1px solid transparent;border-bottom:1px solid transparent}
+.cell.v5{border-right:1px dashed var(--guide)}
+.cell.h5{border-bottom:1px dashed var(--guide)}
+.cell:focus-visible{outline:2px solid var(--focus);outline-offset:-2px;z-index:1}
+.cell svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;z-index:1;pointer-events:none}
+.cell svg path{fill:none;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .14s ease-out,stroke .9s}
+.cell svg .sh{stroke:rgba(40,30,15,.28);stroke-width:.35}
+.cell svg .th{stroke:var(--t,var(--work));stroke-width:.29}
+.cell svg .tw{stroke:rgba(255,255,255,.28);stroke-width:.08;stroke-dasharray:.06 .08}
+.cell svg .l2{transition-delay:.12s}
+.cell.on svg .sh,.cell.on svg .th{stroke-dashoffset:0}
+.cell svg .tw{opacity:0;transition:opacity .2s .2s}
+.cell.on svg .tw{opacity:1}
+.cell.bare::before{content:"";position:absolute;left:50%;top:50%;width:18%;height:18%;border-radius:50%;background:#8a8068;opacity:.6;transform:translate(-50%,-50%)}
+@media (prefers-reduced-motion:reduce){.cell svg path{transition:none}}
+#board.done .cell{cursor:default}
+#board.done .cell.on{--t:var(--c)}
+#board.done .cell.bare::before{opacity:0}
+
+.tools{max-width:520px;width:100%;margin:14px auto 0;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.seg{display:inline-flex;border:1px solid var(--ink);border-radius:2px;overflow:hidden}
+.seg button,.plain{font:500 13px var(--body);color:var(--ink);background:none;border:0;padding:8px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--wall)}
+.plain{border:1px solid var(--rule);border-radius:2px}
+button:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+.placard{background:var(--plate);color:var(--plate-ink);padding:20px 20px 18px;box-shadow:0 6px 14px -8px rgba(0,0,0,.5);min-width:0}
+.placard h2{font-family:var(--display);font-style:italic;font-weight:500;font-size:24px;line-height:1.15;margin:0 0 4px;text-wrap:balance}
+.placard .meta{font-size:12.5px;margin:0;color:#4d5244}
+.placard .note{font-size:14px;margin:12px 0 0;max-width:38ch}
+.placard .acc{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#6a6f5f;margin:14px 0 0;font-variant-numeric:tabular-nums}
+.status{display:inline-block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;border:1px solid currentColor;padding:2px 7px;margin-bottom:12px}
+.status.done{background:var(--brass);border-color:var(--brass);color:#1d1a10}
+.how{font-size:13px;color:var(--muted);margin:16px 0 0;max-width:40ch}
+
+.wings{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
+.wings button{font:500 12px var(--body);color:var(--ink);background:none;border:1px solid var(--rule);border-radius:2px;padding:7px 11px;cursor:pointer}
+.wings button[aria-current="true"]{border-color:var(--ink);background:var(--ink);color:var(--wall)}
+.wings button:disabled{cursor:not-allowed;color:var(--muted);border-style:dashed}
+.notice{font-size:13px;margin:0 0 14px;color:var(--ink);font-style:italic;font-family:var(--display)}
+#board.withdrawn{display:block;aspect-ratio:1}
+.tools.off{visibility:hidden}
+.thumb.gone i{background:var(--cloth);opacity:.45}
+.wing h3{font:600 11px var(--body);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+#wall{display:flex;flex-wrap:wrap;gap:14px}
+.thumb{width:92px;background:none;border:0;padding:0;color:var(--ink);font:400 11px var(--body);text-align:left;cursor:pointer}
+.thumb i{display:grid;grid-template-columns:repeat(10,1fr);padding:7px;background:var(--cloth);border:6px solid var(--wood);box-shadow:0 5px 9px -5px rgba(0,0,0,.5);aspect-ratio:1}
+.thumb i b{aspect-ratio:1}
+.thumb span{display:block;margin-top:6px;font-variant-numeric:tabular-nums}
+.thumb em{display:block;font-style:normal;color:var(--muted)}
+.thumb[aria-current="true"] i{border-color:var(--brass)}
+footer{border-top:1px solid var(--rule);padding-top:14px;color:var(--muted);font-size:12px;display:flex;flex-wrap:wrap;gap:6px 24px;justify-content:space-between}
+</style>
+</head>
+<body>
+
+<div class="room">
+  <header>
+    <button id="seal" type="button" aria-label="Museum seal">MN</button>
+    <div>
+      <h1>Museum of Fine Needlework</h1>
+      <p class="sub" id="sub"></p>
+    </div>
+  </header>
+
+  <section class="hang">
+    <div>
+      <div class="frame"><div class="cloth"><div id="board" role="grid" aria-label="Work under conservation"></div></div></div>
+      <div class="tools" id="tools">
+        <div class="seg" role="group" aria-label="Needle">
+          <button type="button" id="mStitch" aria-pressed="true">Stitch</button>
+          <button type="button" id="mBare" aria-pressed="false">Mark bare</button>
+        </div>
+        <button type="button" class="plain" id="unpick">Unpick all</button>
+      </div>
+    </div>
+    <aside class="placard" aria-live="polite">
+      <span class="status" id="status"></span>
+      <h2 id="pTitle"></h2>
+      <p class="meta" id="pMeta"></p>
+      <p class="note" id="pNote"></p>
+      <p class="acc" id="pAcc"></p>
+    </aside>
+  </section>
+
+  <section class="wing">
+    <nav class="wings" id="wings" aria-label="Galleries"></nav>
+    <p class="notice" id="notice" hidden></p>
+    <h3 id="count"></h3>
+    <div id="wall"></div>
+    <p class="how">Visitors are <span id="verb">invited</span> to assist the conservation department. Each number in the margin records a run of stitches in that row or column, in order. Runs are separated by at least one bare square. Right-click, or choose Mark bare, to note a square that should stay empty.</p>
+  </section>
+
+  <footer><span>Open daily. Please do not touch the works, except as directed.</span><span>The vault is not open to the public.</span></footer>
+</div>
+
+<script>
+const INK={r:'#b3261e',w:'#f6f1e3',b:'#2f5d9b',t:'#2f5d9b',p:'#9a7245',c:'#3f8f8a',g:'#c98d3a',l:'#e9c98a',
+ k:'#3b3a3c',s:'#7d8f6a',z:'#8f969c',y:'#d9b44a',a:'#a9adb3',x:'#5f8f62',f:'#7a5230',d:'#7d1d1a',h:'#4a4a5a'};
+const META='Cotton floss on 14-count aida. 10 × 10 stitches.';
+const today=new Date(), TODAY=today.getFullYear()+'.'+String(today.getMonth()+1).padStart(2,'0')+String(today.getDate()).padStart(2,'0');
+const WINGS=[
+ {n:'Gallery 4',name:'Objects of the Kitchen Drawer',verb:'invited',dim:0},
+ {n:'Gallery 5',name:'Objects of the Living Room',verb:'encouraged',dim:.07},
+ {n:'Gallery 6',name:'Objects of the Garage',verb:'expected',dim:.14},
+ {n:'Gallery 7',name:'Objects of the Basement',verb:'obliged',dim:.24},
+ {n:'Gallery —',name:'',verb:'required',dim:0,deep:true}
+];
+const WORKS=[
+ {w:0,id:'babybel',acc:'1987.14',title:'Portion, Sealed',
+  note:'A red field interrupted once by a pale horizontal band. The band has been read as a meditation on access. It is believed to be a tab.',
+  g:["...rrrr...",".rrrrrrrr.",".rrrrrrrr.","rrrrrrrrrr","wwwwwwwwww","rrrrrrrrrr","rrrrrrrrrr",".rrrrrrrr.",".rrrrrrrr.","...rrrr..."]},
+ {w:0,id:'silica',acc:'1991.03',title:'Do Not Eat',
+  note:'A sachet with crimped edges and two lines of inscription. The text is addressed to no one in particular and remains the most widely read in the collection.',
+  g:["b.b.b.b.b.","bbbbbbbbbb","b........b","b.tt.ttt.b","b........b","b.ttt.tt.b","b........b","bbbbbbbbbb",".b.b.b.b.b",".........."]},
+ {w:0,id:'potato',acc:'2003.27',title:'Tuber, Found Beneath a Cabinet',
+  note:'The length of time the subject spent in situ is not recorded. Scholars disagree on the placement of the two voids, and the museum accepts either reading.',
+  g:["...pppp...","..ppppppp.",".ppp.ppppp",".ppppppppp","ppppppp.pp","pppppppppp","pp.pppppp.","ppppppppp.",".ppppppp..","..ppppp..."]},
+ {w:0,id:'clip',acc:'2011.08',title:'Closure',
+  note:'A bread tag, shown at roughly four times life size. Dated by its original inscription to a Thursday. The loaf is lost.',
+  g:[".cccccccc.","cccccccccc","cccccccccc","ccc....ccc","cc......cc","cc......cc","ccc....ccc","cccc..cccc","cccc..cccc",".ccc..ccc."]},
+ {w:0,id:'biscuit',acc:'V.0001',vault:true,title:'Votive Biscuit',meta:META+' Vault holdings.',
+  note:'Attributed to a devotional tradition for which no other evidence survives. Not previously exhibited.',
+  g:["..gggggg..",".gggggggg.","gggggggggg","gggggggggg",".l.ll.ll.l","l.ll.ll.l.","gggggggggg","gggggggggg",".gggggggg.",".........."]},
+
+ {w:1,id:'remote',acc:'2014.02',title:'Remote, Between the Cushions',
+  note:'Recovered after a search lasting most of an evening. The volume was set to 31 at the time of acquisition, and the museum has preserved it there.',
+  g:["...kkkk...","..kkkkkk..","..kr..kk..","..kkkkkk..","..k.k.kk..","..kkkkkk..","..k.k.kk..","..kkkkkk..","..k.k.kk..","..kkkkkk.."]},
+ {w:1,id:'sock',acc:'2017.11',title:'Sock (Pair Unknown)',
+  note:'One of a pair. The museum continues to search for the other and asks visitors to check their own homes.',
+  g:["..ssss....","..ssss....","..wwww....","..ssss....","..ssss....","..sssss...","..sssssss.","..ssssssss","...sssssss","....sssss."]},
+ {w:1,id:'plumber',acc:'2019.06',gone:true,title:'Thrill-Seeking Plumber',
+  note:'Withdrawn at the request of the rights holder. The hoop is displayed as it was returned to us.'},
+
+ {w:2,id:'can',acc:'2022.09',title:'Coffee Can of Assorted Screws',
+  note:'None of the screws fit anything in the house. The can is nonetheless considered complete.',
+  g:[".zzzzzzzz.",".z.z..z.z.",".cccccccc.",".cyyyyyyc.",".cyyyyyyc.",".cccccccc.",".cccccccc.",".cccccccc.",".cccccccc.",".cccccccc."]},
+ {w:2,id:'chair',acc:'2025.10',title:'Lawn Chair, Folding',
+  note:'Shown open. The museum has never successfully folded it and no longer tries.',
+  g:[".a......a.",".awgwgwga.",".agwgwgwa.",".awgwgwga.",".agwgwgwa.","aaaaaaaaaa",".wgwgwgwg.",".a......a.","a........a","a........a"]},
+
+ {w:3,id:'misc',acc:'2031.04',title:'Box Labeled MISC',
+  note:'Contents catalogued as miscellaneous. Further cataloguing has been postponed indefinitely.',
+  g:["bb.bbbb.bb",".bbbbbbbb.","bbbbbbbbbb","bbwwwwwwbb","bbwkkkkwbb","bbwwwwwwbb","bbbbbbbbbb","bbbbbbbbbb","bbbbbbbbbb","bbbbbbbbbb"]},
+ {w:3,id:'gallery',acc:'2048.12',title:'Gallery 4',
+  note:'Depicts the gallery in which it hangs, including itself, at a scale too small to show.',
+  g:["..........","ffff.fff..","f..f.f.f..","f..f.fff..","ffff......","......ffff",".fff..f..f",".f.f..f..f",".fff..ffff",".........."]},
+ {w:3,id:'hedgehog',acc:'2063.01',gone:true,title:'Hedgehog, Blue, Moving Quickly',
+  note:'Withdrawn at the request of the rights holder. The museum regrets that the work could not be retained, and that it was here so briefly.'},
+
+ {w:4,id:'sigil',acc:'2116.—',title:'Sigil to Summon Garthol, Demon of the Deep',
+  note:'Garthol is not depicted. His representatives have confirmed that he prefers it this way. Visitors are asked not to complete the circle after closing.',
+  g:["...dddd...",".dd....dd.",".d..dd..d.","d..d..d..d","d.dddddd.d","d..d..d..d","d.d.dd.d.d",".d.d..d.d.",".dd....dd.","...dddd..."]},
+ {w:4,id:'visitor',acc:TODAY,title:'Visitor',meta:META+' Restored by the visitor.',
+  note:'Acquired today. The museum is grateful for your contribution to the permanent collection.',
+  g:["......ffff","...h..f..f","..hhh.f..f","...h..ffff",".hhhhh....","...h......","...h......","..h.h.....","..h.h.....",".hh.hh...."]}
+];
+const STITCH='<svg viewBox="0 0 1 1" aria-hidden="true"><path class="sh" pathLength="1" d="M0 1.03L1 .03"/><path class="th" pathLength="1" d="M0 1L1 0"/><path class="tw" d="M0 1L1 0"/><path class="sh l2" pathLength="1" d="M0 .03L1 1.03"/><path class="th l2" pathLength="1" d="M0 0L1 1"/><path class="tw" d="M0 0L1 1"/></svg>';
+const N=10, $=id=>document.getElementById(id);
+const runs=a=>{const r=[];let n=0;for(const v of a){if(v)n++;else if(n){r.push(n);n=0}}if(n)r.push(n);return r.length?r:[0]};
+let save={}; try{save=JSON.parse(localStorage.getItem('mfn')||'{}')}catch(e){}
+save.cells=save.cells||{}; save.done=save.done||{};
+const persist=()=>{try{localStorage.setItem('mfn',JSON.stringify(save))}catch(e){}};
+const playable=w=>WORKS.filter(x=>x.w===w&&!x.gone&&!x.vault);
+const wingDone=w=>playable(w).every(x=>save.done[x.id]);
+save.opened=save.opened||{};
+const open=w=>{if(w===0||save.opened[w])return true;if(wingDone(w-1)){save.opened[w]=1;persist();return true}return false};
+const visible=x=>open(x.w)&&(!x.vault||save.vault);
+let cur=WORKS.find(w=>w.id===save.cur&&visible(w))||WORKS[0], mode='on', cells=[], rowC=[], colC=[];
+const state=()=>save.cells[cur.id]||(save.cells[cur.id]=Array(N*N).fill(0)); // 0 empty, 1 stitch, 2 bare
+const sol=(w,i)=>w.g[Math.floor(i/N)][i%N];
+const mainInk=w=>INK[[...w.g.join('')].find(ch=>ch!=='.')];
+
+function setWing(){
+  const W=WINGS[cur.w];
+  $('sub').textContent=W.name?W.n+' · '+W.name:W.n;
+  $('verb').textContent=W.verb;
+  document.body.style.setProperty('--dim',W.dim);
+  if(W.deep)document.documentElement.dataset.depth='5';else delete document.documentElement.dataset.depth;
+  const nav=$('wings');nav.textContent='';
+  WINGS.forEach((x,i)=>{const b=document.createElement('button');b.type='button';b.id='wing-'+i;
+    const o=open(i);b.disabled=!o;b.textContent=o?x.n:x.n+' · Closed for installation';
+    if(i===4&&!o)b.textContent='Closed for installation';
+    b.setAttribute('aria-current',i===cur.w);
+    b.onclick=()=>{cur=WORKS.find(w=>w.w===i&&visible(w));save.cur=cur.id;$('notice').hidden=true;build()};nav.appendChild(b)});
+}
+function build(){
+  setWing();
+  const b=$('board'); b.textContent=''; cells=[]; rowC=[]; colC=[];
+  b.classList.toggle('withdrawn',!!cur.gone); $('tools').classList.toggle('off',!!cur.gone);
+  if(cur.gone){b.classList.remove('done');placard();wall();return}
+  b.appendChild(document.createElement('div'));
+  for(let c=0;c<N;c++){const d=document.createElement('div');d.className='clue c';
+    runs(cur.g.map(r=>r[c]!=='.')).forEach(n=>{const s=document.createElement('span');s.textContent=n;d.appendChild(s)});b.appendChild(d);colC.push(d)}
+  for(let r=0;r<N;r++){const d=document.createElement('div');d.className='clue r';
+    runs([...cur.g[r]].map(ch=>ch!=='.')).forEach(n=>{const s=document.createElement('span');s.textContent=n;d.appendChild(s)});b.appendChild(d);rowC.push(d);
+    for(let c=0;c<N;c++){const i=r*N+c,e=document.createElement('button');e.type='button';e.className='cell'+(c===4?' v5':'')+(r===4?' h5':'');
+      e.dataset.i=i;e.id='cell-'+i;e.setAttribute('aria-label','Row '+(r+1)+', column '+(c+1));
+      e.innerHTML=STITCH;
+      e.style.setProperty('--c',INK[sol(cur,i)]||mainInk(cur));
+      b.appendChild(e);cells.push(e)}}
+  paint(); placard(); wall();
+}
+function paint(){
+  const s=state(); cells.forEach((e,i)=>{e.classList.toggle('on',s[i]===1);e.classList.toggle('bare',s[i]===2)});
+  let ok=true;
+  for(let r=0;r<N;r++){const m=runs(s.slice(r*N,r*N+N).map(v=>v===1)).join()===runs([...cur.g[r]].map(ch=>ch!=='.')).join();rowC[r].classList.toggle('ok',m);ok=ok&&m}
+  for(let c=0;c<N;c++){const m=runs(s.filter((_,i)=>i%N===c).map(v=>v===1)).join()===runs(cur.g.map(r=>r[c]!=='.')).join();colC[c].classList.toggle('ok',m);ok=ok&&m}
+  if(ok&&!save.done[cur.id]){
+    const before=open(cur.w+1);
+    save.done[cur.id]=1;placard();wall();
+    if(!before&&cur.w+1<WINGS.length&&open(cur.w+1)){
+      const W=WINGS[cur.w+1];$('notice').textContent=(W.name?W.n:'A further gallery')+' is now open to visitors.';$('notice').hidden=false;setWing()}
+  }
+  $('board').classList.toggle('done',!!save.done[cur.id]);
+  persist();
+}
+function placard(){
+  const d=!!save.done[cur.id]||cur.gone;
+  $('status').textContent=cur.gone?'Withdrawn':d?'Restored':'Under conservation'; $('status').className='status'+(d&&!cur.gone?' done':'');
+  $('pTitle').textContent=d?cur.title:'Untitled';
+  $('pMeta').textContent=cur.gone?'Hoop and aida cloth. Thread removed.':d?(cur.meta||META):'Attribution withheld until restoration is complete.';
+  $('pNote').textContent=d?cur.note:'This work entered the collection with its stitching lost. The original thread counts survive in the margins.';
+  $('pAcc').textContent='Accession no. '+cur.acc;
+}
+function wall(){
+  const w=$('wall'); w.textContent='';
+  const shown=WORKS.filter(x=>x.w===cur.w&&visible(x));
+  shown.forEach(x=>{const b=document.createElement('button');b.type='button';b.className='thumb'+(x.gone?' gone':'');b.id='thumb-'+x.id;b.setAttribute('aria-current',x===cur);
+    const i=document.createElement('i'),d=!!save.done[x.id],s=save.cells[x.id]||[];
+    for(let k=0;k<N*N;k++){const p=document.createElement('b');if(d&&s[k]===1)p.style.background=INK[sol(x,k)]||mainInk(x);i.appendChild(p)}
+    const sp=document.createElement('span');sp.textContent=x.acc;const em=document.createElement('em');em.textContent=x.gone?'Withdrawn':d?x.title:'Under conservation';
+    b.append(i,sp,em);b.onclick=()=>{cur=x;save.cur=x.id;$('notice').hidden=true;build()};w.appendChild(b)});
+  const pl=shown.filter(x=>!x.gone),n=pl.filter(x=>save.done[x.id]).length;
+  $('count').textContent='Works restored in this gallery: '+n+' of '+pl.length;
+}
+// stitching: click or drag; the first square decides whether the drag stitches or unpicks
+let drag=null;
+function apply(i){const s=state();if(save.done[cur.id]||s[i]===drag.to&&drag.to!==0)return; if(drag.to===0&&s[i]!==drag.from)return; s[i]=drag.to;paint()}
+$('board').addEventListener('pointerdown',e=>{const c=e.target.closest('.cell');if(!c||save.done[cur.id])return;e.preventDefault();
+  const i=+c.dataset.i,s=state(),want=(e.button===2||mode==='bare')?2:1;
+  drag={from:s[i],to:s[i]===want?0:want};apply(i)});
+$('board').addEventListener('pointermove',e=>{if(!drag)return;const t=document.elementFromPoint(e.clientX,e.clientY);const c=t&&t.closest&&t.closest('.cell');if(c)apply(+c.dataset.i)});
+addEventListener('pointerup',()=>drag=null); addEventListener('pointercancel',()=>drag=null);
+$('board').addEventListener('contextmenu',e=>e.preventDefault());
+$('board').addEventListener('keydown',e=>{const c=e.target.closest('.cell');if(!c)return;const i=+c.dataset.i;
+  const mv={ArrowLeft:-1,ArrowRight:1,ArrowUp:-N,ArrowDown:N}[e.key];
+  if(mv){const j=i+mv;if(j>=0&&j<N*N&&!(Math.abs(mv)===1&&Math.floor(j/N)!==Math.floor(i/N)))cells[j].focus();e.preventDefault()}
+  else if(e.key===' '||e.key==='Enter'||e.key==='x'){e.preventDefault();const s=state(),want=e.key==='x'?2:(mode==='bare'?2:1);drag={from:s[i],to:s[i]===want?0:want};apply(i);drag=null}});
+function setMode(m){mode=m;$('mStitch').setAttribute('aria-pressed',m==='on');$('mBare').setAttribute('aria-pressed',m==='bare')}
+$('mStitch').onclick=()=>setMode('on'); $('mBare').onclick=()=>setMode('bare');
+$('unpick').onclick=()=>{save.cells[cur.id]=Array(N*N).fill(0);delete save.done[cur.id];build()};
+let taps=0,tapT=0;
+$('seal').onclick=()=>{const now=Date.now();taps=now-tapT<1200?taps+1:1;tapT=now;
+  if(taps>=5&&!save.vault){save.vault=1;cur=WORKS.find(w=>w.vault);save.cur=cur.id;build();$('thumb-'+cur.id).scrollIntoView({block:'nearest'})}};
+build();
+</script>
+</body>
+</html>
